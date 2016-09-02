@@ -1,0 +1,430 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started with Prep-buddy &#8212; prep-buddy 0.5.0 beta documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5.0 beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="prep-buddy 0.5.0 beta documentation" href="prep-buddy.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started-with-prep-buddy">
+<h1>Getting Started with Prep-buddy<a class="headerlink" href="#getting-started-with-prep-buddy" title="Permalink to this headline">¶</a></h1>
+<p>Let&#8217;s take a sample CSV dataset with consisting attributes named calls.csv:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07122915122,07220374233,Missed,0,Sun Oct 24 08:13:45 +0100 2010
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010
+07456622368,07331532487,Missed,24,Sat Sep 18 13:34:09 +0100 2010
+</pre></div>
+</div>
+<div class="section" id="deduplicate">
+<h2>Deduplicate<a class="headerlink" href="#deduplicate" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">deduplicate()</span></code></p>
+<p>It gives a new TransformableRDD with unique values by eliminating the duplicates considring every columns as primary key.
+Also consideres the given columns as primary key <strong>if given</strong>.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;calls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">deduplicatedRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">deduplicate</span><span class="o">()</span>
+<span class="n">deduplicatedRDD</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;output&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>In the sample dataset given above, there are 2 records with repetition. So, after calling the deduplicate method, the deduplicatedRDD will hold the following values:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07122915122,07220374233,Missed,0,Sun Oct 24 08:13:45 +0100 2010
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010
+07456622368,07331532487,Missed,24,Sat Sep 18 13:34:09 +0100 2010
+</pre></div>
+</div>
+</div>
+<div class="section" id="duplicates">
+<h2>Duplicates<a class="headerlink" href="#duplicates" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">duplicates()</span></code></p>
+<p>It gives a new TransformableRDD with only the records which has a duplicate entry in the given rdd considring every columns as primary key.
+Also consideres the given columns as primary key <strong>if given</strong>.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;calls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">duplicates</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">duplicates</span><span class="o">()</span>
+<span class="n">duplicates</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;output&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>It will produce the following result:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+</pre></div>
+</div>
+</div>
+<div class="section" id="facets">
+<h2>Facets<a class="headerlink" href="#facets" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">listFacets(columnIndex:Int)</span></code></p>
+<p>In dataset we want to know the number of occurrences for each value of any field.
+Let say we want facets on direction column. So we just need to pass the column index of direction field to listFacets.
+It returns a TextFacets object.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;calls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">facets</span><span class="k">:</span> <span class="kt">TextFacets</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">listFacets</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="n">facets</span><span class="o">.</span><span class="n">highest</span><span class="o">())</span>
+</pre></div>
+</div>
+<p>Output of the above code is:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>(Missed, 4)
+</pre></div>
+</div>
+</div>
+<div class="section" id="flag">
+<h2>Flag<a class="headerlink" href="#flag" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">flag(symbol:</span> <span class="pre">String,</span> <span class="pre">markerPredicate:</span> <span class="pre">(RowRecord)</span> <span class="pre">⇒</span> <span class="pre">Boolean)</span></code></p>
+<p>Flag is useful when we want mark rows as a favorite or important row.So that we can perform some operation on those rows
+Let say we want to mark those row on sample dataset whose field &#8220;direction&#8221; is &#8220;Outgoing&#8221; by &#8220;#&#8221; symbol.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span> <span class="nc">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;calls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">marked</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">flag</span><span class="o">(</span><span class="s">&quot;#&quot;</span><span class="o">,</span> <span class="k">_</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="n">equals</span><span class="o">(</span><span class="s">&quot;Outgoing&quot;</span><span class="o">))</span>
+<span class="n">marked</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;flagged-data&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>It will save the file as &#8220;flagged-data&#8221; with the following records:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010,
+07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010,
+07122915122,07220374233,Missed,0,Sun Oct 24 08:13:45 +0100 2010,
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011,#
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011,#
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010,
+07456622368,07331532487,Missed,24,Sat Sep 18 13:34:09 +0100 2010,
+</pre></div>
+</div>
+</div>
+<div class="section" id="map-by-flag">
+<h2>Map By Flag<a class="headerlink" href="#map-by-flag" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">mapByFlag(symbol:</span> <span class="pre">String,</span> <span class="pre">symbolColumnIndex:</span> <span class="pre">Int,</span> <span class="pre">mapFunction:</span> <span class="pre">(String)</span> <span class="pre">⇒</span> <span class="pre">String)</span></code></p>
+<p>We want map only on marked rows</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;calls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">marked</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">flag</span><span class="o">(</span><span class="s">&quot;#&quot;</span><span class="o">,</span> <span class="k">_</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="n">equals</span><span class="o">(</span><span class="s">&quot;Outgoing&quot;</span><span class="o">))</span>
+<span class="n">mapped</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">marked</span><span class="o">.</span><span class="n">mapByFlag</span><span class="o">(</span><span class="s">&quot;#&quot;</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="s">&quot;+&quot;</span> <span class="o">+</span> <span class="k">_</span><span class="o">)</span>
+<span class="n">mapped</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;marked-data&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>The above code will write file which will be look like:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010,
+07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010,
+07122915122,07220374233,Missed,0,Sun Oct 24 08:13:45 +0100 2010,
++07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011,#
++07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011,#
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010,
+07456622368,07331532487,Missed,24,Sat Sep 18 13:34:09 +0100 2010,
+</pre></div>
+</div>
+</div>
+<div class="section" id="removerows">
+<h2>RemoveRows<a class="headerlink" href="#removerows" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">removeRows(predicate:</span> <span class="pre">(RowRecord)</span> <span class="pre">⇒</span> <span class="pre">Boolean)</span></code></p>
+<p>It is useful when we want to remove rows from dataset for a given condition.
+Let say we want to remove those row whose field &#8220;direction&#8221;is Missed.Here is the code:</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;calls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">purged</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">removeRows</span><span class="o">((</span><span class="n">row</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="n">equals</span><span class="o">(</span><span class="s">&quot;Missed&quot;</span><span class="o">))</span>
+<span class="n">purged</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;output&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>In above code will write file which will be look like:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010
+</pre></div>
+</div>
+</div>
+<div class="section" id="clustering">
+<h2>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">clusters(columnIndex:</span> <span class="pre">Int,</span> <span class="pre">clusteringAlgorithm:</span> <span class="pre">ClusteringAlgorithm)</span></code></p>
+<p>In this method we have to pass the clustering algorithm by which we want to group the similar item in given column index.
+We are introducing three algorithm for clustering</p>
+<p><strong>Simple Fingerprint algorithm</strong></p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">clusters</span><span class="k">:</span> <span class="kt">Clusters</span> <span class="o">=</span> <span class="n">transformedRDD</span><span class="o">.</span><span class="n">clusters</span><span class="o">(</span><span class="mi">2</span> <span class="o">,</span><span class="k">new</span> <span class="nc">SimpleFingerprintAlgorithm</span><span class="o">())</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><strong>By N-Gram Fingerprint algorithm</strong></dt>
+<dd>In this algorithm we pass the value of n which is the size of chars of the token.</dd>
+</dl>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">clusters</span><span class="k">:</span> <span class="kt">Clusters</span> <span class="o">=</span> <span class="n">transformedRDD</span><span class="o">.</span><span class="n">clusters</span><span class="o">(</span><span class="mi">2</span> <span class="o">,</span><span class="k">new</span> <span class="nc">NGramFingerprintAlgorithm</span><span class="o">(</span><span class="mi">2</span><span class="o">))</span>
+</pre></div>
+</div>
+<p><strong>By Levenshtein distance algorithm</strong>
+This algorithm groups the item of field if distance between them is very less.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">clusters</span><span class="k">:</span> <span class="kt">Clusters</span> <span class="o">=</span> <span class="n">transformedRDD</span><span class="o">.</span><span class="n">clusters</span><span class="o">(</span><span class="mi">2</span> <span class="o">,</span><span class="k">new</span> <span class="nc">LevenshteinDistance</span><span class="o">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="replace-values">
+<h2>Replace Values<a class="headerlink" href="#replace-values" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">replaceValues(cluster:</span> <span class="pre">Cluster,</span> <span class="pre">newValue:</span> <span class="pre">String,</span> <span class="pre">columnIndex:</span> <span class="pre">Int)</span></code></p>
+<p>It replaces cluster&#8217;s items with the given new value of the given column index</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="s">&quot;one two, three&quot;</span><span class="o">,</span><span class="s">&quot;two one, four&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">initialDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">data</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">initialDataset</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">clusters</span><span class="k">:</span> <span class="kt">Clusters</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">clusters</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="k">new</span> <span class="nc">SimpleFingerprintAlgorithm</span><span class="o">())</span>
+<span class="k">val</span> <span class="n">listOfClusters</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Cluster</span><span class="o">]</span> <span class="k">=</span> <span class="n">clusters</span><span class="o">.</span><span class="n">getClustersWithSizeGreaterThan</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">cluster</span><span class="k">:</span> <span class="kt">Cluster</span> <span class="o">=</span> <span class="n">listOfClusters</span><span class="o">.</span><span class="n">head</span>
+<span class="k">val</span> <span class="n">replacedRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">replaceValues</span><span class="o">(</span><span class="n">cluster</span><span class="o">,</span> <span class="s">&quot;One&quot;</span><span class="o">,</span> <span class="mi">0</span><span class="o">)</span>
+<span class="n">replacedRDD</span><span class="o">.</span><span class="n">collect</span><span class="o">().</span><span class="n">forEach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>One,three
+One,four
+</pre></div>
+</div>
+</div>
+<div class="section" id="imputation">
+<h2>Imputation<a class="headerlink" href="#imputation" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">impute(columnIndex:</span> <span class="pre">Int,</span> <span class="pre">strategy:</span> <span class="pre">ImputationStrategy,</span> <span class="pre">missingHints:</span> <span class="pre">List[String])</span></code></p>
+<p>It takes column index, ImputationStrategy and an optional parameter missing hints.
+This method replaces the missing value and given missing hints with the value determined by the strategy.
+Missing hints are <strong>optional</strong>.
+We have a sample dataset missingCalls.csv:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07122915122,07220374233,Missed,24,Sun Oct 24 08:13:45 +0100 2010
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010
+07456622368,07331532487, Missed, ,Sat Sep 18 13:34:09 +0100 2010
+</pre></div>
+</div>
+<p>In this sample data, we want to impute at duration field.</p>
+<p><strong>Imputation by mean</strong></p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;missingCalls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">imputedRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">impute</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="k">new</span> <span class="nc">MeanStrategy</span><span class="o">())</span>
+<span class="n">imputedRDD</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;output&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07122915122,07220374233,Missed,0,Sun Oct 24 08:13:45 +0100 2010
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010
+07456622368,07331532487, Missed,16.57,Sat Sep 18 13:34:09 +0100 2010
+</pre></div>
+</div>
+<p><strong>Impute by approx mean</strong></p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;missingCalls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">imputedRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">impute</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="k">new</span> <span class="nc">ApproxMeanStrategy</span><span class="o">())</span>
+<span class="n">imputedRDD</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;output&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07122915122,07220374233,Missed,0,Sun Oct 24 08:13:45 +0100 2010
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010
+07456622368,07331532487, Missed,16.57,Sat Sep 18 13:34:09 +0100 2010
+</pre></div>
+</div>
+<p><strong>Impute by mode</strong></p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">JavaRDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;missingCalls.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">imputedRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">impute</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="k">new</span> <span class="nc">ModeSubstitution</span><span class="o">())</span>
+<span class="n">imputedRDD</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;output&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07681546436,07289049655,Missed,11,Sat Sep 18 01:54:03 +0100 2010
+07122915122,07220374233,Missed,24,Sun Oct 24 08:13:45 +0100 2010
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07166594208,07577423566,Outgoing,24,Thu Jan 27 14:23:39 +0000 2011
+07102745960,07720520621,Incoming,22,Tue Oct 12 14:16:16 +0100 2010
+07456622368,07331532487,Missed,24,Sat Sep 18 13:34:09 +0100 2010
+</pre></div>
+</div>
+</div>
+<div class="section" id="impute-by-naive-bayes-classifier">
+<h2>Impute by naive bayes classifier<a class="headerlink" href="#impute-by-naive-bayes-classifier" title="Permalink to this headline">¶</a></h2>
+<p>This imputation is helpful when we want to predict the categorical field&#8217;s missing value</p>
+<p>We have dataset called people.csv</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span> Name,Over 170CM, Eye, Hair length, Sex
+ Drew,No,Blue,Short,Male
+ Claudia,Yes,Brown,Long,Female
+ Drew,No,Blue,Long,Female
+ Drew,No,Blue,Long,Female
+ Alberto,Yes,Brown,Short,Male
+<span class="hll"> Drew,Yes,Blue,Long,
+</span> Karin,No,Blue,Long,Female
+ Nina,Yes,Brown,Short,Female
+ Sergio,Yes,Blue,Long,Male
+</pre></div>
+</div>
+<p>We want to predict the missing value of sex field.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;people.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">imputedRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">impute</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="k">new</span> <span class="nc">NaiveBayesSubstitution</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)))</span>
+<span class="n">imputedRDD</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;output&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span> Name,Over 170CM, Eye, Hair length, Sex
+ Drew,No,Blue,Short,Male
+ Claudia,Yes,Brown,Long,Female
+ Drew,No,Blue,Long,Female
+ Drew,No,Blue,Long,Female
+ Alberto,Yes,Brown,Short,Male
+<span class="hll"> Drew,Yes,Blue,Long,Female
+</span> Karin,No,Blue,Long,Female
+ Nina,Yes,Brown,Short,Female
+ Sergio,Yes,Blue,Long,Male
+</pre></div>
+</div>
+</div>
+<div class="section" id="smoothing">
+<h2>Smoothing<a class="headerlink" href="#smoothing" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">smooth(columnIndex:</span> <span class="pre">Int,</span> <span class="pre">smoothingMethod:</span> <span class="pre">SmoothingMethod)</span></code></p>
+<blockquote>
+<div><p>Smoothing is very popular in data analysis by being able to extract more information from the dataset.
+We are introducing two moving average methods for smoothing:</p>
+<p>We have sales dataset called sales.csv</p>
+</div></blockquote>
+<p><strong>Smoothing By Simple Moving Average</strong></p>
+<p>To smooth data by Simple Moving Average we need to specify the window size to the constructor.</p>
+<p>Output:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>5.0
+4.666
+5.0
+5.0
+</pre></div>
+</div>
+<p><strong>By Weighted Moving Average</strong></p>
+<p>To smooth data by this method we need to pass Weights to the constructor which contains the weight values according to the window position.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Sum of the weights should be up to one.</p>
+</div>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">callDataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;sales.csv&quot;</span><span class="o">)</span>
+<span class="n">initialRDD</span><span class="k">:</span> <span class="kt">TransformableRDD</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TransformableRDD</span><span class="o">(</span><span class="n">callDataset</span><span class="o">)</span>
+<span class="n">weights</span><span class="k">:</span> <span class="kt">Weights</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Weights</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+<span class="n">weights</span><span class="o">.</span><span class="n">add</span><span class="o">(</span><span class="mf">0.166</span><span class="o">)</span>
+<span class="n">weights</span><span class="o">.</span><span class="n">add</span><span class="o">(</span><span class="mf">0.333</span><span class="o">)</span>
+<span class="n">weights</span><span class="o">.</span><span class="n">add</span><span class="o">(</span><span class="mf">0.5</span><span class="o">)</span>
+<span class="n">smoothed</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">Double</span><span class="o">]</span> <span class="k">=</span> <span class="n">initialRDD</span><span class="o">.</span><span class="n">smooth</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="k">new</span> <span class="nc">WeightedMovingAverageMethod</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">weights</span><span class="o">))</span>
+<span class="n">smoothed</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="o">(</span><span class="s">&quot;smoothed&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>5.162
+5.998
+5.329
+6.999
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="prep-buddy.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started with Prep-buddy</a><ul>
+<li><a class="reference internal" href="#deduplicate">Deduplicate</a></li>
+<li><a class="reference internal" href="#duplicates">Duplicates</a></li>
+<li><a class="reference internal" href="#facets">Facets</a></li>
+<li><a class="reference internal" href="#flag">Flag</a></li>
+<li><a class="reference internal" href="#map-by-flag">Map By Flag</a></li>
+<li><a class="reference internal" href="#removerows">RemoveRows</a></li>
+<li><a class="reference internal" href="#clustering">Clustering</a></li>
+<li><a class="reference internal" href="#replace-values">Replace Values</a></li>
+<li><a class="reference internal" href="#imputation">Imputation</a></li>
+<li><a class="reference internal" href="#impute-by-naive-bayes-classifier">Impute by naive bayes classifier</a></li>
+<li><a class="reference internal" href="#smoothing">Smoothing</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="prep-buddy.html">Documentation overview</a><ul>
+      <li>Previous: <a href="introduction.html" title="previous chapter">Introduction</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/gettingStarted.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, data-commons.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/gettingStarted.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

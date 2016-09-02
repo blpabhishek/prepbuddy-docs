@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &#8212; prep-buddy 0.5.0 beta documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5.0 beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="prep-buddy 0.5.0 beta documentation" href="prep-buddy.html" />
+    <link rel="prev" title="Welcome to prep-buddy’s documentation!" href="prep-buddy.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="a-library-to-clean-transform-and-prepare-data-at-scale-using-apache-spark">
+<h2><em>A library to clean, transform and prepare data at scale using Apache Spark</em><a class="headerlink" href="#a-library-to-clean-transform-and-prepare-data-at-scale-using-apache-spark" title="Permalink to this headline">¶</a></h2>
+<p>A Scala / Java / Python library for cleaning, transforming and executing other preparation tasks for large data sets on Apache Spark.</p>
+<p>Our aim is to provide a set of algorithms for cleaning and transforming very large data sets, inspired by predecessors such as Open Refine, Pandas and Scikit-learn packages.</p>
+</div>
+</div>
+<div class="section" id="functionalities">
+<h1>Functionalities<a class="headerlink" href="#functionalities" title="Permalink to this headline">¶</a></h1>
+<p>The TransformableRDD holds all the functionality that could be done over a RDD. It takes an RDD object as constructor parameter. The following functionalities are available on TransformableRDD.</p>
+<div class="section" id="imputation">
+<h2>Imputation<a class="headerlink" href="#imputation" title="Permalink to this headline">¶</a></h2>
+<p>It is the process of replacing missing data with substituted values. The following imputation algorithms have been implemented:</p>
+<ol class="arabic simple">
+<li>Approx Mean Based Substitution</li>
+<li>Mode Based Substitution</li>
+<li>Naive Bayes Classifier Based Substitution</li>
+<li>Univariate Linear Regression Based Substitution</li>
+<li>Mean Based Substitution</li>
+</ol>
+</div>
+<div class="section" id="faceting">
+<h2>Faceting<a class="headerlink" href="#faceting" title="Permalink to this headline">¶</a></h2>
+<p>It is helpful to find the number of occurrences for each value of a field.</p>
+</div>
+<div class="section" id="clustering">
+<h2>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h2>
+<p>It is the process Finding the group of different items but could be the alternative representation of the same item.The following imputation algorithms have been implemented</p>
+<ol class="arabic simple">
+<li>Simple Fingerprint algorithm</li>
+<li>N-Gram Fingerprint algorithm</li>
+<li>Levenshtein distance algorithm</li>
+</ol>
+</div>
+<div class="section" id="deduplicate">
+<h2>Deduplicate<a class="headerlink" href="#deduplicate" title="Permalink to this headline">¶</a></h2>
+<p>Is the process of removing duplicates from a dataset.</p>
+</div>
+<div class="section" id="duplicate">
+<h2>Duplicate<a class="headerlink" href="#duplicate" title="Permalink to this headline">¶</a></h2>
+<p>It provides only the records which has duplicates entry in the given dataset</p>
+</div>
+<div class="section" id="split-column">
+<h2>Split Column<a class="headerlink" href="#split-column" title="Permalink to this headline">¶</a></h2>
+<p>Is the process of split a field into multiple field.</p>
+<ol class="arabic simple">
+<li>By delimiter</li>
+<li>By length</li>
+</ol>
+</div>
+<div class="section" id="join-column">
+<h2>Join Column<a class="headerlink" href="#join-column" title="Permalink to this headline">¶</a></h2>
+<p>Is the process of merging two or more fields into one field.</p>
+</div>
+<div class="section" id="flag">
+<h2>Flag<a class="headerlink" href="#flag" title="Permalink to this headline">¶</a></h2>
+<p>Mark rows by a symbol for a given condition.</p>
+</div>
+<div class="section" id="map-by-flag">
+<h2>Map By Flag<a class="headerlink" href="#map-by-flag" title="Permalink to this headline">¶</a></h2>
+<p>Map on marked (flag) row.</p>
+</div>
+<div class="section" id="remove-rows">
+<h2>Remove Rows<a class="headerlink" href="#remove-rows" title="Permalink to this headline">¶</a></h2>
+<p>Removes rows from dataset for a given condition</p>
+</div>
+<div class="section" id="normalization">
+<h2>Normalization<a class="headerlink" href="#normalization" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Min Max Normalizer</li>
+<li>Z Score Normalizer</li>
+<li>Decimal Scaling Normalizer</li>
+</ol>
+</div>
+<div class="section" id="smoothing">
+<h2>Smoothing<a class="headerlink" href="#smoothing" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Simple Moving Average</li>
+<li>Weighted Moving Average</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="prep-buddy.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#a-library-to-clean-transform-and-prepare-data-at-scale-using-apache-spark"><em>A library to clean, transform and prepare data at scale using Apache Spark</em></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#functionalities">Functionalities</a><ul>
+<li><a class="reference internal" href="#imputation">Imputation</a></li>
+<li><a class="reference internal" href="#faceting">Faceting</a></li>
+<li><a class="reference internal" href="#clustering">Clustering</a></li>
+<li><a class="reference internal" href="#deduplicate">Deduplicate</a></li>
+<li><a class="reference internal" href="#duplicate">Duplicate</a></li>
+<li><a class="reference internal" href="#split-column">Split Column</a></li>
+<li><a class="reference internal" href="#join-column">Join Column</a></li>
+<li><a class="reference internal" href="#flag">Flag</a></li>
+<li><a class="reference internal" href="#map-by-flag">Map By Flag</a></li>
+<li><a class="reference internal" href="#remove-rows">Remove Rows</a></li>
+<li><a class="reference internal" href="#normalization">Normalization</a></li>
+<li><a class="reference internal" href="#smoothing">Smoothing</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="prep-buddy.html">Documentation overview</a><ul>
+      <li>Previous: <a href="prep-buddy.html" title="previous chapter">Welcome to prep-buddy&#8217;s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/introduction.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, data-commons.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/introduction.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
